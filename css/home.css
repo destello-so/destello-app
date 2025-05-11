@@ -7,10 +7,10 @@ body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f8f8f
         .hero h1 { font-size: 2.5em; margin: 0 0 10px 0; color: #fff; }
         .hero p { color: #fff; margin-bottom: 20px; }
         .hero button { background: #ff7f6b; color: #fff; border: none; padding: 12px 30px; border-radius: 20px; font-size: 1em; cursor: pointer; }
-        .section { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .section { max-width: 1400px; max-height: 1400px;margin: 40px auto; padding: 0; }
         .section h2 { margin-bottom: 20px; }
-        .products, .brands { display: flex; flex-wrap: wrap; gap: 24px; }
-        .product, .brand { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 16px; flex: 1 1 180px; min-width: 180px; max-width: 220px; text-align: center; }
+        .products, .brands { display: flex; flex-wrap: wrap; gap: 2em; }
+        .product, .brand { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 16px; flex: 1 1 400px; min-width: 180px; max-width: 300px; text-align: center; }
         .product img { width: 100%; border-radius: 8px; }
         .product-title { font-weight: 600; margin: 10px 0 5px 0; }
         .product-price { color: #ff7f6b; font-weight: 500; }

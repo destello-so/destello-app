@@ -1,7 +1,7 @@
 <nav class="navbar">
     <div class="navbar-container">
         <div class="navbar-logo">
-            <a href="index.php">
+            <a href="home.php">
                 <h1>Destello</h1>
                 <span class="logo-tagline">Ilumina tu estilo</span>
             </a>

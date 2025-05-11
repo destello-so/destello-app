@@ -1,0 +1,20 @@
+2025-05-11 22:05:53: Solicitud recibida - {"cartItemId":"6"}
+2025-05-11 22:05:53: Procesando eliminación del ítem ID: 6
+2025-05-11 22:05:53: Ítem encontrado - CartID: 6, Producto: Organizador de Escritorio Blanco
+2025-05-11 22:05:54: Eliminación exitosa - Quedan 3 ítems en el carrito
+2025-05-11 22:06:00: Solicitud recibida - {"cartItemId":"12"}
+2025-05-11 22:06:00: Procesando eliminación del ítem ID: 12
+2025-05-11 22:06:00: Ítem encontrado - CartID: 6, Producto: Marcador Fluorescente Azul
+2025-05-11 22:06:01: Eliminación exitosa - Quedan 2 ítems en el carrito
+2025-05-11 22:06:34: Solicitud recibida - {"cartItemId":"11"}
+2025-05-11 22:06:34: Procesando eliminación del ítem ID: 11
+2025-05-11 22:06:34: Ítem encontrado - CartID: 6, Producto: Cuaderno Universitario 100 hojas
+2025-05-11 22:06:35: Eliminación exitosa - Quedan 1 ítems en el carrito
+2025-05-11 22:08:21: Solicitud recibida - {"cartItemId":"15"}
+2025-05-11 22:08:21: Procesando eliminación del ítem ID: 15
+2025-05-11 22:08:21: Ítem encontrado - CartID: 6, Producto: Planner Semanal Deluxe
+2025-05-11 22:08:22: Eliminación exitosa - Quedan 2 ítems en el carrito
+2025-05-11 22:08:30: Solicitud recibida - {"cartItemId":"16"}
+2025-05-11 22:08:30: Procesando eliminación del ítem ID: 16
+2025-05-11 22:08:30: Ítem encontrado - CartID: 6, Producto: Cuaderno Universitario 100 hojas
+2025-05-11 22:08:31: Eliminación exitosa - Quedan 1 ítems en el carrito

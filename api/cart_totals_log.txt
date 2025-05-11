@@ -1,0 +1,8 @@
+2025-05-11 22:09:24: Solicitud recibida: {"userId":"6"}
+2025-05-11 22:09:24: Procesando para userId: 6
+2025-05-11 22:09:25: Carrito encontrado: 6
+2025-05-11 22:09:25: Encontrados 3 tipos de productos
+2025-05-11 22:09:25: Producto: Sticker Planificador, Cantidad: 1, Precio: 8.00, Total: 8
+2025-05-11 22:09:25: Producto: Marcador Fluorescente Azul, Cantidad: 2, Precio: 3.20, Total: 6.4
+2025-05-11 22:09:25: Producto: Planner Semanal Deluxe, Cantidad: 3, Precio: 49.90, Total: 149.7
+2025-05-11 22:09:25: Totales calculados - Subtotal: 164.1, Descuento: 0, Total: 164.1, Items: 6

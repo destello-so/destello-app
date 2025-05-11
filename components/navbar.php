@@ -1,10 +1,44 @@
-<!-- navbar.php -->
 <nav class="navbar">
-    <div class="logo">Mi Sitio Web</div>
-    <ul class="nav-links">
-        <li><a href="index.php">Inicio</a></li>
-        <li><a href="productos.php">Productos</a></li>
-        <li><a href="contacto.php">Contacto</a></li>
-        <li><a href="login.php">Iniciar sesión</a></li>
-    </ul>
+    <div class="navbar-container">
+        <div class="navbar-logo">
+            <a href="index.php">
+                <h1>Destello</h1>
+                <span class="logo-tagline">Ilumina tu estilo</span>
+            </a>
+        </div>
+        
+        <div class="navbar-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        
+        <ul class="navbar-menu">
+            <li class="navbar-item">
+                <a href="index.php" class="navbar-link"><i class="fas fa-home"></i> Inicio</a>
+            </li>
+            <li class="navbar-item">
+                <a href="cart.php" class="navbar-link"><i class="fas fa-shopping-cart"></i> Carrito</a>
+            </li>
+            <li class="navbar-item">
+                <a href="wishlist.php" class="navbar-link"><i class="fas fa-heart"></i> Lista de deseos</a>
+            </li>
+            <li class="navbar-item">
+                <a href="checkout.php" class="navbar-link"><i class="fas fa-credit-card"></i> Pago</a>
+            </li>
+            <li class="navbar-item navbar-btn">
+                <a href="logout.php" class="navbar-button"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+            </li>
+        </ul>
+    </div>
 </nav>
+
+<script>
+    const mobileMenu = document.querySelector('#mobile-menu');
+    const navbarMenu = document.querySelector('.navbar-menu');
+    
+    mobileMenu.addEventListener('click', function() {
+        mobileMenu.classList.toggle('is-active');
+        navbarMenu.classList.toggle('active');
+    });
+</script>

@@ -13,6 +13,8 @@ require 'config/db.php';
     <title>Destello - Inicio</title>
 </head>
 <body>
+    <?php include 'components/navbar.php'; ?>
+
     <h1>Inicio - Catálogo</h1>
 </body>
 </html>

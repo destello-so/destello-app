@@ -15,7 +15,7 @@
         
         <ul class="navbar-menu">
             <li class="navbar-item">
-                <a href="index.php" class="navbar-link"><i class="fas fa-home"></i> Inicio</a>
+                <a href="home.php" class="navbar-link"><i class="fas fa-home"></i> Inicio</a>
             </li>
             <li class="navbar-item">
                 <a href="cart.php" class="navbar-link"><i class="fas fa-shopping-cart"></i> Carrito</a>

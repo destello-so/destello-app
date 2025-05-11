@@ -180,12 +180,18 @@ body {
     display: none;
 }
 
-/* Responsive */
-@media screen and (max-width: 960px) {
+.navbar-button i{
+    margin-right: .8em;
+}
+.navbar-item i {
+    margin-right: .8em;
+}
+
+
+@media screen and (max-width: 1160px) {
     .navbar-container {
         padding: 0 30px;
     }
-    
     .navbar-menu {
         display: flex;
         flex-direction: column;
@@ -237,7 +243,9 @@ body {
     .navbar-btn {
         margin: 15px auto;
         width: 80%;
+       
     }
+   
     
     .navbar-button {
         width: 100%;
@@ -245,7 +253,7 @@ body {
         font-size: 1.1rem;
         border-radius: 30px;
     }
-    
+ 
     .navbar-toggle {
         display: block;
         cursor: pointer;

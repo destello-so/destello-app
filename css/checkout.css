@@ -159,6 +159,11 @@ body {
     display: flex;
     gap: 2.5rem;
     flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
 .checkout-main {
@@ -174,11 +179,12 @@ body {
 
 /* Secciones de checkout */
 .checkout-section {
-    background-color: white;
+    background: white;
     border-radius: 15px;
     padding: 1.8rem;
     box-shadow: 0 5px 20px var(--shadow-color);
     transition: all 0.3s ease;
+    border: 1px solid rgba(248, 187, 208, 0.1);
 }
 
 .checkout-section:hover {
@@ -238,11 +244,12 @@ body {
 
 .form-field input,
 .form-field select {
-    padding: 0.8rem 1rem;
+    padding: 0.9rem 1rem;
     border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 0.95rem;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    background-color: #fcfcfc;
 }
 
 .form-field input:focus,
@@ -250,6 +257,7 @@ body {
     outline: none;
     border-color: var(--accent-soft);
     box-shadow: 0 0 0 3px rgba(248, 187, 208, 0.2);
+    background-color: white;
 }
 
 .input-icon {
@@ -314,6 +322,7 @@ body {
 /* Formulario de tarjeta de crédito */
 .credit-card-form {
     margin-top: 2rem;
+    position: relative;
 }
 
 .card-container {
@@ -324,9 +333,9 @@ body {
 .card-preview {
     position: relative;
     width: 100%;
-    height: 200px;
+    height: 220px;
     transform-style: preserve-3d;
-    transition: transform 0.8s;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .card-preview.flipped {
@@ -341,10 +350,24 @@ body {
     border-radius: 16px;
     padding: 20px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .card-front {
-    background: linear-gradient(135deg, #6b7ad6, var(--secondary-color));
+    background: linear-gradient(135deg, #6b7ad6, var(--secondary-color), #9e5f82);
     color: white;
     display: flex;
     flex-direction: column;
@@ -352,7 +375,7 @@ body {
 }
 
 .card-back {
-    background: linear-gradient(135deg, var(--secondary-color), #6b7ad6);
+    background: linear-gradient(135deg, var(--secondary-color), #6b7ad6, #7e4e67);
     transform: rotateY(180deg);
     display: flex;
     flex-direction: column;
@@ -494,25 +517,27 @@ body {
 
 .complete-order-btn {
     width: 100%;
-    padding: 1rem 0;
+    padding: 1.1rem 0;
     border: none;
     border-radius: 30px;
-    background: var(--button-gradient);
+    background: linear-gradient(135deg, #6b7ad6, var(--secondary-color));
     color: white;
     font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 5px 15px rgba(107, 122, 214, 0.3);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
 }
 
 .complete-order-btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(107, 122, 214, 0.4);
+    background-position: right center;
 }
 
 #cardNumber{
@@ -620,16 +645,7 @@ body {
 }
 
 .checkmark:before {
-    content: "";
-    width: 20px;
-    height: 40px;
-    position: absolute;
-    border-right: 3px solid var(--success-color);
-    border-bottom: 3px solid var(--success-color);
-    transform: rotate(45deg);
-    z-index: 1;
-    top: 15px;
-    left: 32px;
+    display: none;
 }
 
 .modal-content h2 {
@@ -700,4 +716,640 @@ body {
     .card-number {
         font-size: 1.2rem;
     }
+}
+
+/* Estilos para notificaciones toast */
+.toast {
+    visibility: hidden;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    min-width: 250px;
+    z-index: 2000;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    backdrop-filter: blur(5px);
+}
+
+.toast.show {
+    visibility: visible;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast::before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 1.1rem;
+}
+
+.toast.info {
+    background: linear-gradient(135deg, #6b7ad6, #7389ff);
+}
+
+.toast.info::before {
+    content: "\f05a"; /* Icono de información */
+}
+
+.toast.success {
+    background: linear-gradient(135deg, #66bb6a, #4caf50);
+}
+
+.toast.success::before {
+    content: "\f058"; /* Icono de check */
+}
+
+.toast.warning {
+    background: linear-gradient(135deg, #ffa726, #ff9800);
+}
+
+.toast.warning::before {
+    content: "\f071"; /* Icono de advertencia */
+}
+
+.toast.error {
+    background: linear-gradient(135deg, #ef5350, #f44336);
+}
+
+.toast.error::before {
+    content: "\f057"; /* Icono de error */
+}
+
+/* Mejoras al formulario de tarjeta */
+.card-validation-message {
+    margin-top: 1.2em;
+    width: 100%;
+    background: white;
+    padding: 1em;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    color: #666;
+    font-size: 0.85rem;
+    display: none;
+    z-index: 10;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.card-validation-message.show {
+    display: block;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.card-validation-message.valid {
+    color: var(--success-color);
+}
+
+.card-validation-message.invalid {
+    color: #f44336;
+}
+
+/* Mejora de secciones */
+.checkout-section {
+    background: white;
+    border-radius: 15px;
+    padding: 1.8rem;
+    box-shadow: 0 5px 20px var(--shadow-color);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(248, 187, 208, 0.1);
+}
+
+/* Mejora de los inputs */
+.form-field input,
+.form-field select {
+    padding: 0.9rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background-color: #fcfcfc;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+    outline: none;
+    border-color: var(--accent-soft);
+    box-shadow: 0 0 0 3px rgba(248, 187, 208, 0.2);
+    background-color: white;
+}
+
+/* Animación para la tarjeta */
+.card-preview {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.card-front {
+    background: linear-gradient(135deg, #6b7ad6, var(--secondary-color), #9e5f82);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-back {
+    background: linear-gradient(135deg, var(--secondary-color), #6b7ad6, #7e4e67);
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mejora al botón de finalizar */
+.complete-order-btn {
+    width: 100%;
+    padding: 1.1rem 0;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #6b7ad6, var(--secondary-color));
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(107, 122, 214, 0.3);
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+
+.complete-order-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(107, 122, 214, 0.4);
+    background-position: right center;
+}
+
+/* Mejora del estado de carga */
+.loading-checkout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 5px 20px var(--shadow-color);
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--lavender-accent);
+    border-top: 4px solid var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Rediseño completo del formulario de dirección de envío */
+.shipping-details {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(248, 187, 208, 0.15);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    border: none;
+}
+
+.shipping-details::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #6b7ad6, var(--secondary-color));
+    z-index: 1;
+}
+
+.shipping-details h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2.5rem;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.shipping-details h2 i {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    background: var(--primary-soft);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.shipping-details h2::after {
+    display: none;
+}
+
+/* Selector de direcciones guardadas */
+.address-selection {
+    background: var(--lavender-light);
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    position: relative;
+    border: 2px solid #e9e3ff;
+    transition: all 0.3s ease;
+}
+
+.address-selection::before {
+    content: '\f015';
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    background: var(--secondary-color);
+    color: white;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.8rem;
+}
+
+.address-selection select {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 12px 15px;
+    width: 100%;
+    font-size: 0.95rem;
+    color: #444;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%23999' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    transition: all 0.3s ease;
+}
+
+.address-selection select:focus {
+    border-color: var(--accent-soft);
+    box-shadow: 0 0 0 3px rgba(248, 187, 208, 0.2);
+    outline: none;
+}
+
+.address-selection label {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    display: block;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Estructura del formulario */
+.shipping-form {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.form-field {
+    margin-bottom: 0;
+    position: relative;
+}
+
+.form-field.full {
+    grid-column: span 6;
+}
+
+.form-field.half {
+    grid-column: span 3;
+}
+
+.form-field.third {
+    grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+    .shipping-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .form-field.half, 
+    .form-field.third {
+        width: 100%;
+    }
+}
+
+/* Mejora visual para las etiquetas e inputs */
+.form-field label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.form-field.required label::after {
+    content: "*";
+    color: var(--secondary-color);
+    margin-left: 4px;
+    font-size: 1rem;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 2px solid #e6e6e6;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background-color: #fcfcfc;
+    color: #444;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.form-field input:focus {
+    border-color: var(--secondary-color);
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(248, 187, 208, 0.15);
+    outline: none;
+}
+
+.form-field input:not(:placeholder-shown):valid {
+    border-color: #c8e6c9;
+    background-color: #f9fff9;
+}
+
+/* Iconos con mejor alineación */
+.field-icon {
+    position: relative;
+}
+
+.field-icon::before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    z-index: 1;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.form-field input:focus ~ .field-icon::before {
+    color: var(--secondary-color);
+}
+
+/* Iconos específicos */
+.field-name::before {
+    content: "\f007"; /* usuario */
+}
+
+.field-email::before {
+    content: "\f0e0"; /* sobre */
+}
+
+.field-phone::before {
+    content: "\f095"; /* teléfono */
+}
+
+.field-address::before {
+    content: "\f3c5"; /* marcador */
+}
+
+.field-city::before {
+    content: "\f64f"; /* edificio */
+}
+
+.field-state::before {
+    content: "\f279"; /* mapa */
+}
+
+.field-country::before {
+    content: "\f57d"; /* globo */
+}
+
+.field-zip::before {
+    content: "\f084"; /* código */
+}
+
+/* Contenedor para el checkbox de guardar dirección */
+.save-address-container {
+    grid-column: span 6;
+    margin-top: 2rem;
+    padding: 1.2rem;
+    background-color: var(--lavender-light);
+    border-radius: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #e9e3ff;
+}
+
+/* Estilo mejorado para el checkbox */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #444;
+    user-select: none;
+    transition: all 0.2s ease;
+    margin: 0;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 24px;
+    width: 24px;
+    background-color: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: var(--primary-soft);
+    border-color: var(--accent-soft);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(248, 187, 208, 0.2);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 8px;
+    top: 4px;
+    width: 6px;
+    height: 11px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+    animation: checkAnim 0.2s ease-in-out forwards;
+}
+
+.save-address-info {
+    font-size: 0.9rem;
+    color: #777;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.save-address-info i {
+    color: var(--secondary-color);
+}
+
+@keyframes checkAnim {
+    0% { transform: scale(0) rotate(45deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(45deg); opacity: 0.8; }
+    100% { transform: scale(1) rotate(45deg); opacity: 1; }
+}
+
+/* Efectos de hover y focus */
+.form-field:hover label {
+    color: var(--secondary-color);
+}
+
+.form-row {
+    display: flex;
+}
+
+/* Nuevo estilo para entradas con iconos */
+.input-with-icon {
+    display: flex;
+    align-items: center;
+    border: 2px solid #e6e6e6;
+    border-radius: 12px;
+    background-color: #fcfcfc;
+    padding: 0 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.input-with-icon:focus-within {
+    border-color: var(--secondary-color);
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(248, 187, 208, 0.15);
+}
+
+.input-with-icon i {
+    color: #aaa;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 20px;
+    text-align: center;
+}
+
+.input-with-icon:focus-within i {
+    color: var(--secondary-color);
+}
+
+.input-with-icon input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 12px 10px;
+    font-size: 0.95rem;
+    color: #444;
+    outline: none;
+    width: 100%;
+}
+
+/* Desactivar estilos anteriores para inputs cuando están dentro de input-with-icon */
+.form-field .input-with-icon input {
+    box-shadow: none;
+    background: transparent;
+}
+
+.form-field .input-with-icon input:focus {
+    box-shadow: none;
+    border: none;
+}
+
+/* Estilos para cuando el input es válido */
+.form-field .input-with-icon:has(input:not(:placeholder-shown):valid) {
+    border-color: #c8e6c9;
+    background-color: #f9fff9;
 }

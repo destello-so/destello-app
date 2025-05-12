@@ -73,6 +73,46 @@ try {
     $itemsStmt->execute([$cartId]);
     $items = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
     
+    // MODIFICACIÓN: Verificar cuáles de estos productos están en la lista de deseos
+    $productIds = [];
+    foreach ($items as $item) {
+        $productIds[] = $item['product_id'];
+    }
+
+    $wishlistItems = [];
+    if (!empty($productIds)) {
+        // Buscar la wishlist del usuario
+        $wishlistStmt = $conn->prepare("SELECT id FROM wishlists WHERE user_id = ? LIMIT 1");
+        $wishlistStmt->execute([$userId]);
+        
+        if ($wishlistStmt->rowCount() > 0) {
+            $wishlistId = $wishlistStmt->fetchColumn();
+            
+            // Preparar placeholders para la consulta SQL
+            $placeholders = implode(',', array_fill(0, count($productIds), '?'));
+            
+            // Verificar qué productos están en la wishlist
+            $wishlistCheckStmt = $conn->prepare("
+                SELECT product_id 
+                FROM wishlist_items 
+                WHERE wishlist_id = ? AND product_id IN ($placeholders)
+            ");
+            
+            $params = [$wishlistId];
+            foreach ($productIds as $id) {
+                $params[] = $id;
+            }
+            
+            $wishlistCheckStmt->execute($params);
+            $wishlistResults = $wishlistCheckStmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($wishlistResults as $result) {
+                $wishlistItems[] = $result['product_id'];
+            }
+        }
+    }
+    // FIN DE LA MODIFICACIÓN
+    
     if (count($items) === 0) {
         echo '<div class="empty-cart">
                 <div class="empty-cart-icon">
@@ -104,6 +144,7 @@ try {
     foreach ($items as $item) {
         $stockClass = $item['stock_quantity'] < 5 ? 'low-stock' : '';
         $dateAdded = new DateTime($item['added_at']);
+        $inWishlist = in_array($item['product_id'], $wishlistItems);
         
         echo '<div class="cart-item ' . $stockClass . '" data-cart-item-id="' . $item['cart_item_id'] . '" data-product-id="' . $item['product_id'] . '">
                 <div class="item-image">
@@ -128,7 +169,7 @@ try {
                     <div class="item-total">Total: S/ ' . number_format($item['price'] * $item['quantity'], 2) . '</div>
                 </div>
                 <div class="item-actions">
-                    <button class="action-btn wishlist-btn" title="Mover a lista de deseos" data-in-wishlist="false">
+                    <button class="action-btn wishlist-btn ' . ($inWishlist ? 'in-wishlist' : '') . '" title="' . ($inWishlist ? 'En tu lista de deseos' : 'Mover a lista de deseos') . '" data-in-wishlist="' . ($inWishlist ? 'true' : 'false') . '">
                         <i class="fas fa-heart"></i>
                     </button>
                     <button class="action-btn delete-btn" title="Eliminar">

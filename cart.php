@@ -324,29 +324,63 @@ require 'config/db.php';
                         const productId = item.getAttribute('data-product-id');
                         const userId = localStorage.getItem("userId");
                         
-                        if (inWishlist) {
-                            // Si ya está en la lista de deseos, quitarlo
-                            this.setAttribute('data-in-wishlist', 'false');
-                            this.classList.remove('in-wishlist');
-                            this.setAttribute('title', 'Mover a lista de deseos');
-                            
-                            // Aquí implementar la llamada para quitar de la lista de deseos
-                            showToast('Eliminado de tu lista de deseos');
-                        } else {
-                            // Si no está en la lista, agregarlo y mostrar animación
-                            this.setAttribute('data-in-wishlist', 'true');
-                            this.classList.add('in-wishlist');
-                            this.setAttribute('title', 'En tu lista de deseos');
-                            
-                            // Animación de corazón
-                            this.querySelector('i').classList.add('heart-pulse');
-                            setTimeout(() => {
-                                this.querySelector('i').classList.remove('heart-pulse');
-                            }, 800);
-                            
-                            // Aquí implementar la llamada para añadir a la lista de deseos
-                            showToast('¡Añadido a tu lista de deseos!');
+                        if (!userId) {
+                            showToast('Debes iniciar sesión para usar la lista de deseos', 'warning');
+                            return;
                         }
+                        
+                        // Mostrar indicador de carga
+                        showToast('Actualizando lista de deseos...', 'info');
+                        
+                        // Preparar datos para enviar
+                        let formData = new FormData();
+                        formData.append('userId', userId);
+                        formData.append('productId', productId);
+                        formData.append('action', 'toggle');
+                        
+                        // Enviar solicitud para alternar estado en wishlist
+                        fetch('api/toggle_wishlist.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const isAdded = data.added;
+                                
+                                // Actualizar UI
+                                this.setAttribute('data-in-wishlist', isAdded ? 'true' : 'false');
+                                this.classList.toggle('in-wishlist', isAdded);
+                                this.setAttribute('title', isAdded ? 'En tu lista de deseos' : 'Mover a lista de deseos');
+                                
+                                // Animación de corazón al añadir
+                                if (isAdded) {
+                                    this.querySelector('i').classList.add('heart-pulse');
+                                    setTimeout(() => {
+                                        this.querySelector('i').classList.remove('heart-pulse');
+                                    }, 800);
+                                }
+                                
+                                // Actualizar contador de wishlist en navbar si existe
+                                const navbarWishlistBadge = document.querySelector('.navbar-actions .icon-badge-container:first-child .badge');
+                                if (navbarWishlistBadge) {
+                                    navbarWishlistBadge.textContent = data.totalItems;
+                                    navbarWishlistBadge.classList.add('pulse');
+                                    setTimeout(() => {
+                                        navbarWishlistBadge.classList.remove('pulse');
+                                    }, 1000);
+                                }
+                                
+                                showToast(data.message, 'success');
+                            } else {
+                                showToast(data.message || 'Error al actualizar la lista de deseos', 'error');
+                                console.error("Error en wishlist:", data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error de red:', error);
+                            showToast('Error de conexión', 'error');
+                        });
                     });
                 });
                 
@@ -653,6 +687,8 @@ require 'config/db.php';
                     setTimeout(initCartActions, 100);
                     // También reinicializa los botones de eliminar
                     setTimeout(initializeDeleteButtons, 100);
+                    // Reinicializar botones de wishlist
+                    setTimeout(initializeWishlistButtons, 100);
                 })
                 .catch(error => {
                     console.error('Error al refrescar carrito:', error);
@@ -789,6 +825,127 @@ require 'config/db.php';
             };
         });
     }
+    </script>
+    <script>
+    // Función para inicializar los botones de wishlist
+    function initializeWishlistButtons() {
+        console.log('Inicializando botones de wishlist');
+        
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            btn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Botón wishlist clickeado');
+                
+                const inWishlist = this.getAttribute('data-in-wishlist') === 'true';
+                const item = this.closest('.cart-item');
+                const productId = item.getAttribute('data-product-id');
+                const userId = localStorage.getItem("userId");
+                
+                if (!userId) {
+                    showToast('Debes iniciar sesión para usar la lista de deseos', 'warning');
+                    return false;
+                }
+                
+                // Mostrar indicador de carga
+                document.getElementById('toast') && document.getElementById('toast').remove();
+                let toast = document.createElement('div');
+                toast.id = 'toast';
+                toast.className = 'show info';
+                toast.textContent = 'Actualizando lista de deseos...';
+                document.body.appendChild(toast);
+                
+                // Preparar datos para enviar
+                let formData = new FormData();
+                formData.append('userId', userId);
+                formData.append('productId', productId);
+                formData.append('action', 'toggle');
+                
+                // Enviar solicitud para alternar estado en wishlist
+                fetch('api/toggle_wishlist.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Respuesta de wishlist:', data);
+                    if (data.success) {
+                        const isAdded = data.added;
+                        
+                        // Actualizar UI
+                        this.setAttribute('data-in-wishlist', isAdded ? 'true' : 'false');
+                        this.classList.toggle('in-wishlist', isAdded);
+                        this.setAttribute('title', isAdded ? 'En tu lista de deseos' : 'Mover a lista de deseos');
+                        
+                        // Animación de corazón al añadir
+                        if (isAdded) {
+                            this.querySelector('i').classList.add('heart-pulse');
+                            setTimeout(() => {
+                                this.querySelector('i').classList.remove('heart-pulse');
+                            }, 800);
+                        }
+                        
+                        // Actualizar contador de wishlist en navbar si existe
+                        const navbarWishlistBadge = document.querySelector('.navbar-actions .icon-badge-container:first-child .badge');
+                        if (navbarWishlistBadge) {
+                            navbarWishlistBadge.textContent = data.totalItems;
+                            navbarWishlistBadge.classList.add('pulse');
+                            setTimeout(() => {
+                                navbarWishlistBadge.classList.remove('pulse');
+                            }, 1000);
+                        }
+                        
+                        toast.className = 'show success';
+                        toast.textContent = data.message;
+                    } else {
+                        toast.className = 'show error';
+                        toast.textContent = data.message || 'Error al actualizar la lista de deseos';
+                        console.error("Error en wishlist:", data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error de red:', error);
+                    toast.className = 'show error';
+                    toast.textContent = 'Error de conexión';
+                });
+                
+                // Ocultar toast después de 3 segundos
+                setTimeout(() => {
+                    toast && toast.classList.remove('show');
+                }, 3000);
+                
+                return false;
+            };
+        });
+    }
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Documento cargado, inicializando botones de wishlist");
+        
+        // Inicializar botones de wishlist
+        initializeWishlistButtons();
+        
+        // Observar cambios en el DOM para reinicializar botones cuando sea necesario
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    console.log("DOM modificado, reinicializando botones de wishlist");
+                    setTimeout(initializeWishlistButtons, 100);
+                }
+            });
+        });
+        
+        // Observar cambios en el contenedor del carrito
+        const cartContainer = document.getElementById('cart-content-container');
+        if (cartContainer) {
+            observer.observe(cartContainer, { 
+                childList: true,
+                subtree: true 
+            });
+        }
+    });
     </script>
 </body>
 </html>

@@ -13,7 +13,7 @@ if (!isset($_GET['userId'])) {
 $userId = (int)$_GET['userId'];
 
 try {
-    // Buscar el carrito del usuario
+    // Primero buscar el carrito activo del usuario
     $cartStmt = $conn->prepare("
         SELECT id FROM carts 
         WHERE user_id = ? 
@@ -25,52 +25,37 @@ try {
     if ($cartStmt->rowCount() === 0) {
         echo json_encode([
             'success' => true,
-            'subtotal' => '0.00',
-            'discount' => '0.00',
-            'total' => '0.00',
-            'items_count' => 0
+            'items' => []
         ]);
         exit;
     }
     
     $cartId = $cartStmt->fetchColumn();
     
-    // Obtener el subtotal y cantidad de ítems del carrito
+    // Obtener items del carrito con información del producto
     $itemsStmt = $conn->prepare("
-        SELECT ci.quantity, p.price, p.name
+        SELECT ci.id as cart_item_id, ci.product_id, ci.quantity, 
+               p.name, p.price, p.stock_quantity, 
+               pi.url as image_url, pi.alt_text
         FROM cart_items ci
         JOIN products p ON ci.product_id = p.id
+        LEFT JOIN product_images pi ON p.id = pi.product_id AND pi.is_primary = 1
         WHERE ci.cart_id = ?
     ");
     $itemsStmt->execute([$cartId]);
+    
     $items = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    $itemCount = count($items);
-    
-    $subtotal = 0;
-    $itemsCount = 0;
-    foreach ($items as $item) {
-        $itemTotal = $item['price'] * $item['quantity'];
-        $subtotal += $itemTotal;
-        $itemsCount += $item['quantity'];
-    }
-    
-    // Aquí implementarías la lógica para calcular descuentos
-    $discount = 0;
-    
-    $total = $subtotal - $discount;
     
     echo json_encode([
         'success' => true,
-        'subtotal' => number_format($subtotal, 2),
-        'discount' => number_format($discount, 2),
-        'total' => number_format($total, 2),
-        'items_count' => $itemsCount
+        'cartId' => $cartId,
+        'items' => $items
     ]);
+    
 } catch (PDOException $e) {
     echo json_encode([
         'success' => false,
-        'message' => 'Error al obtener los totales: ' . $e->getMessage()
+        'message' => 'Error al obtener items del carrito: ' . $e->getMessage()
     ]);
 }
 ?>

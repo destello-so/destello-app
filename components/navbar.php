@@ -11,9 +11,6 @@
             <a href="home.php" class="nav-link">
                 <i class="fas fa-home"></i> Inicio
             </a>
-            <a href="products.php" class="nav-link">
-                <i class="fas fa-shopping-bag"></i> Productos
-            </a>
             <a href="wishlist.php" class="nav-link">
                 <i class="fas fa-heart"></i> Lista de Deseos
             </a>

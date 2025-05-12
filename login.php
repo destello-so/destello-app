@@ -410,7 +410,7 @@ session_start();
                     <p>Accede a tu cuenta para continuar</p>
                 </div>
                 
-                <form class="auth-form" action="login_process.php" method="post">
+                <form class="auth-form" id="login-form-submit">
                     <div class="auth-form-group">
                         <label for="email">Correo Electrónico</label>
                         <i class="fas fa-envelope"></i>
@@ -537,6 +537,7 @@ session_start();
             const registerForm = document.getElementById('register-form');
             const showRegister = document.getElementById('show-register');
             const showLogin = document.getElementById('show-login');
+            const notification = document.getElementById('notification');
             
             function showLoginForm() {
                 loginForm.style.display = 'block';
@@ -561,6 +562,119 @@ session_start();
             showLogin.addEventListener('click', function(e) {
                 e.preventDefault();
                 showLoginForm();
+            });
+            
+            // Mostrar notificación
+            function showNotification(message, type = 'error') {
+                notification.textContent = message;
+                notification.className = 'notification ' + type;
+                notification.classList.add('show');
+                
+                // Ocultar la notificación después de 5 segundos
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 5000);
+            }
+            
+            // Procesamiento del formulario de login
+            document.getElementById('login-form-submit').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const form = this;
+                
+                // Mostrar efecto de carga
+                form.classList.add('form-loading');
+                
+                fetch('api/login_process.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    form.classList.remove('form-loading');
+                    
+                    if (data.success) {
+                        // Guardar el ID del usuario en localStorage
+                        localStorage.setItem('userId', data.userId);
+                        localStorage.setItem('userName', data.userName);
+                        
+                        // Mostrar notificación de éxito
+                        showNotification(data.message, 'success');
+                        
+                        // Redirigir después de un breve retraso
+                        setTimeout(() => {
+                            // Verificar si hay una URL de redirección almacenada
+                            const redirectUrl = localStorage.getItem('redirectAfterLogin') || data.redirectUrl;
+                            
+                            // Limpiar la URL de redirección después de usarla
+                            if (localStorage.getItem('redirectAfterLogin')) {
+                                localStorage.removeItem('redirectAfterLogin');
+                            }
+                            
+                            window.location.href = redirectUrl;
+                        }, 1500);
+                    } else {
+                        // Mostrar mensaje de error
+                        showNotification(data.message);
+                    }
+                })
+                .catch(error => {
+                    form.classList.remove('form-loading');
+                    showNotification('Error de conexión. Intente nuevamente más tarde.');
+                    console.error('Error:', error);
+                });
+            });
+            
+            // Procesamiento del formulario de registro
+            document.getElementById('register-form-submit').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const form = this;
+                
+                // Verificar que las contraseñas coincidan
+                const password = formData.get('password');
+                const confirmPassword = formData.get('confirm_password');
+                
+                if (password !== confirmPassword) {
+                    showNotification('Las contraseñas no coinciden');
+                    return;
+                }
+                
+                // Mostrar efecto de carga
+                form.classList.add('form-loading');
+                
+                fetch('api/register_process.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    form.classList.remove('form-loading');
+                    
+                    if (data.success) {
+                        // Guardar el ID del usuario en localStorage
+                        localStorage.setItem('userId', data.userId);
+                        localStorage.setItem('userName', data.userName);
+                        
+                        // Mostrar notificación de éxito
+                        showNotification(data.message, 'success');
+                        
+                        // Redirigir después de un breve retraso
+                        setTimeout(() => {
+                            window.location.href = data.redirectUrl;
+                        }, 1500);
+                    } else {
+                        // Mostrar mensaje de error
+                        showNotification(data.message);
+                    }
+                })
+                .catch(error => {
+                    form.classList.remove('form-loading');
+                    showNotification('Error de conexión. Intente nuevamente más tarde.');
+                    console.error('Error:', error);
+                });
             });
         });
     </script>

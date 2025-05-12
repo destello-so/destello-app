@@ -2,18 +2,15 @@
 session_start();
 require 'config/db.php';
 
-// Obtener parámetros de filtro
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $category = isset($_GET['category']) ? (int)$_GET['category'] : 0;
 $price_range = isset($_GET['price']) ? $_GET['price'] : '';
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
 
-// Configuración de paginación
 $products_per_page = 12;
 $offset = ($page - 1) * $products_per_page;
 
-// Construir la consulta SQL base - Se han eliminado los alias para mayor claridad
 $query = "
     SELECT 
         products.id, 
@@ -153,33 +150,47 @@ try {
     <?php include 'components/navbar.php'; ?>
     
     <main class="home-container">
-        <!-- Banner Hero -->
-        <section class="hero-banner" style="background-image: url('assets/img/banner-summer.png'); background-size: cover; background-position: center;">
-            <div class="hero-content">
-                <h1>Ilumina tu creatividad</h1>
-                <p>Descubre nuestra colección exclusiva de productos que harán brillar tus ideas</p>
-                <a href="#products-section" class="hero-button">Explorar Ahora</a>
-            </div>
-        </section>
-        
-        <!-- Promoción de verano -->
-        <section class="promo-banner">
-            <img src="assets/img/banner-summer.png" alt="Promo de Verano - 20% de descuento con el código summer20" class="promo-image">
-            <div class="promo-overlay">
-                <div class="promo-content">
-                    <h2 class="promo-title">PROMO DE VERANO</h2>
-                    <p class="promo-description">20% de descuento con el code summer20</p>
-                    <a href="#products-section" class="promo-button">¡Aprovecha ahora!</a>
+        <!-- Carrusel Hero -->
+        <section class="hero-carousel">
+            <div class="carousel-container">
+                <div class="carousel-slide active" style="background-image: url('assets/img/banner-summer.png');">
+                    <div class="slide-content">
+                        <h1>Ilumina tu creatividad</h1>
+                        <p>Descubre nuestra colección exclusiva de productos que harán brillar tus ideas</p>
+                        <a href="#products-section" class="slide-button">Explorar Ahora</a>
+                    </div>
+                </div>
+                
+                <div class="carousel-slide" style="background-image: url('assets/img/banner-summer.png');">
+                    <div class="slide-content">
+                        <h1>PROMO DE VERANO</h1>
+                        <p>20% de descuento con el código summer20</p>
+                        <a href="#products-section" class="slide-button">¡Aprovecha ahora!</a>
+                    </div>
+                </div>
+                
+                <div class="carousel-slide" style="background-image: url('assets/img/banner-welcome.png');">
+                    <div class="slide-content">
+                        <h1>Bienvenido a Destello</h1>
+                        <p>Tu destino para productos papelería de alta calidad</p>
+                        <a href="#products-section" class="slide-button">Ver productos</a>
+                    </div>
                 </div>
             </div>
-        </section>
-        
-        <!-- Sección de bienvenida -->
-        <section class="welcome-section">
-            <img src="assets/img/banner-welcome.png" alt="Bienvenido a Destello" class="welcome-image">
-            <div class="welcome-content">
-                <h2>Bienvenido a Destello</h2>
-                <p>Tu destino para productos papelería de alta calidad</p>
+            
+            <!-- Controles del carrusel -->
+            <button class="carousel-control prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-control next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <!-- Indicadores del carrusel -->
+            <div class="carousel-indicators">
+                <button class="indicator active" data-slide="0"></button>
+                <button class="indicator" data-slide="1"></button>
+                <button class="indicator" data-slide="2"></button>
             </div>
         </section>
         
@@ -416,27 +427,8 @@ try {
             </div>
         </section>
         
-        <!-- Newsletter -->
-        <section class="newsletter-section">
-            <div class="newsletter-content">
-                <h2>¡Únete a nuestra comunidad!</h2>
-                <p>Suscríbete para recibir novedades, ofertas exclusivas y contenido especial</p>
-                
-                <form class="newsletter-form">
-                    <div class="form-group">
-                        <input type="email" placeholder="Tu correo electrónico" required>
-                        <button type="submit">Suscribirme</button>
-                    </div>
-                    <div class="form-privacy">
-                        <input type="checkbox" id="privacy-policy" required>
-                        <label for="privacy-policy">Acepto la política de privacidad y recibir comunicaciones</label>
-                    </div>
-                </form>
-            </div>
-        </section>
     </main>
     
-    <!-- Modal de producto visto rápido -->
     <div class="quick-view-modal" id="quickViewModal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -446,7 +438,6 @@ try {
         </div>
     </div>
     
-    <!-- Notificación Toast -->
     <div class="toast-container">
         <div class="toast" id="toast">
             <span class="toast-message"></span>
@@ -456,7 +447,6 @@ try {
     
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <script>
-        // Inicialización de Notyf para notificaciones
         const notyf = new Notyf({
             duration: 3000,
             position: {
@@ -485,10 +475,34 @@ try {
             ]
         });
         
+        // Función para verificar si el usuario está autenticado
+        function isUserAuthenticated() {
+            return localStorage.getItem('userId') !== null;
+        }
+        
+        // Función para obtener el ID del usuario
+        function getUserId() {
+            return localStorage.getItem('userId');
+        }
+        
         // Filtros y ordenamiento con actualización en tiempo real
         document.querySelectorAll('#category, #price, #sort').forEach(select => {
             select.addEventListener('change', function() {
                 document.getElementById('filter-form').submit();
+            });
+        });
+        
+        // Efecto de scroll suave para los botones del carrusel
+        document.querySelectorAll('.slide-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 100,
+                    behavior: 'smooth'
+                });
             });
         });
         
@@ -499,129 +513,392 @@ try {
                 const productId = this.getAttribute('data-product-id');
                 
                 // Verificar si el usuario está autenticado
-                <?php if (isset($_SESSION['user_id'])): ?>
+                if (isUserAuthenticated()) {
+                    // Añadir efecto visual de carga
+                    this.classList.add('loading');
+                    
                     // Hacer la petición AJAX para agregar al carrito
                     fetch('api/add_to_cart.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
-                        body: `userId=<?php echo $_SESSION['user_id']; ?>&productId=${productId}&quantity=1`
+                        body: `userId=${getUserId()}&productId=${productId}&quantity=1`
                     })
                     .then(response => response.json())
                     .then(data => {
+                        // Quitar efecto de carga
+                        this.classList.remove('loading');
+                        
                         if (data.success) {
                             notyf.success('¡Producto añadido al carrito!');
                             
-                            // Actualizar contador del carrito en el navbar si existe
+                            // Actualizar contador del carrito
                             const cartBadge = document.querySelector('.badge');
                             if (cartBadge) {
-                                const currentCount = parseInt(cartBadge.textContent);
+                                const currentCount = parseInt(cartBadge.textContent) || 0;
                                 cartBadge.textContent = currentCount + 1;
+                                cartBadge.style.display = 'flex';
+                            }
+                            
+                            // Añadir animación al botón
+                            this.classList.add('added');
+                            setTimeout(() => {
+                                this.classList.remove('added');
+                            }, 1000);
+                            
+                            // Animar el icono del carrito en el navbar
+                            const cartIcon = document.querySelector('.cart-icon');
+                            if (cartIcon) {
+                                cartIcon.classList.add('cart-bump');
+                                setTimeout(() => {
+                                    cartIcon.classList.remove('cart-bump');
+                                }, 300);
                             }
                         } else {
                             notyf.error(data.message || 'Error al añadir el producto');
                         }
                     })
                     .catch(error => {
+                        // Quitar efecto de carga
+                        this.classList.remove('loading');
+                        
                         notyf.error('Error de conexión');
                         console.error('Error:', error);
                     });
-                <?php else: ?>
-                    // Redirigir al login
+                } else {
+                    // Guardar el producto que intentó agregar
+                    localStorage.setItem('pendingAction', JSON.stringify({
+                        type: 'addToCart',
+                        productId: productId
+                    }));
+                    
+                    // Mostrar mensaje para iniciar sesión
                     notyf.error('Debes iniciar sesión para añadir productos al carrito');
+                    
+                    // Almacenar la URL actual para redirigir después del login
+                    localStorage.setItem('redirectAfterLogin', window.location.href);
+                    
+                    // Redirigir al login después de 2 segundos
                     setTimeout(() => {
                         window.location.href = 'login.php';
                     }, 2000);
-                <?php endif; ?>
+                }
             });
         });
         
-        // Función para añadir a la lista de deseos
+        // Función para añadir a lista de deseos (Wishlist)
         document.querySelectorAll('.wishlist-button').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
                 const productId = this.getAttribute('data-product-id');
                 const heartIcon = this.querySelector('i');
                 
-                <?php if (isset($_SESSION['user_id'])): ?>
+                if (isUserAuthenticated()) {
+                    // Aplicar efecto de carga
+                    this.classList.add('loading');
+                    
                     // Hacer la petición AJAX para agregar/quitar de la lista de deseos
                     fetch('api/toggle_wishlist.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
-                        body: `userId=<?php echo $_SESSION['user_id']; ?>&productId=${productId}`
+                        body: `userId=${getUserId()}&productId=${productId}`
                     })
                     .then(response => response.json())
                     .then(data => {
+                        // Quitar efecto de carga
+                        this.classList.remove('loading');
+                        
                         if (data.success) {
-                            if (data.action === 'added') {
+                            // Si la respuesta incluye 'added' es true, se añadió a wishlist
+                            if (data.added) {
                                 heartIcon.classList.remove('far');
                                 heartIcon.classList.add('fas');
-                                heartIcon.parentElement.classList.add('active');
+                                this.classList.add('active');
+                                
+                                // Animación de corazón latiendo
+                                this.classList.add('heart-beat');
+                                setTimeout(() => {
+                                    this.classList.remove('heart-beat');
+                                }, 600);
+                                
                                 notyf.success('¡Producto añadido a tu lista de deseos!');
                             } else {
                                 heartIcon.classList.remove('fas');
                                 heartIcon.classList.add('far');
-                                heartIcon.parentElement.classList.remove('active');
+                                this.classList.remove('active');
                                 notyf.success('Producto eliminado de tu lista de deseos');
+                            }
+                            
+                            // Actualizar contador de wishlist en navbar si existe
+                            const wishlistCounter = document.querySelector('.wishlist-counter');
+                            if (wishlistCounter) {
+                                wishlistCounter.textContent = data.totalItems;
+                                wishlistCounter.style.display = data.totalItems > 0 ? 'flex' : 'none';
                             }
                         } else {
                             notyf.error(data.message || 'Error al actualizar la lista de deseos');
                         }
                     })
                     .catch(error => {
+                        // Quitar efecto de carga
+                        this.classList.remove('loading');
+                        
                         notyf.error('Error de conexión');
                         console.error('Error:', error);
                     });
-                <?php else: ?>
-                    // Redirigir al login
+                } else {
+                    // Guardar el producto que intentó añadir a wishlist
+                    localStorage.setItem('pendingAction', JSON.stringify({
+                        type: 'addToWishlist',
+                        productId: productId
+                    }));
+                    
+                    // Mostrar mensaje para iniciar sesión
                     notyf.error('Debes iniciar sesión para añadir a tu lista de deseos');
+                    
+                    // Almacenar la URL actual para redirigir después del login
+                    localStorage.setItem('redirectAfterLogin', window.location.href);
+                    
+                    // Redirigir al login después de 2 segundos
                     setTimeout(() => {
                         window.location.href = 'login.php';
                     }, 2000);
-                <?php endif; ?>
+                }
             });
         });
         
-        // Verificar productos en la lista de deseos del usuario actual
-        <?php if (isset($_SESSION['user_id'])): ?>
-            // Obtener todos los IDs de productos en la página
-            const productIds = Array.from(document.querySelectorAll('.product-card')).map(card => card.getAttribute('data-product-id')).join(',');
-            
-            if (productIds.length > 0) {
-                // Verificar cuáles están en la lista de deseos
-                fetch(`api/check_wishlist.php?userId=<?php echo $_SESSION['user_id']; ?>&productIds=${productIds}`)
+        // Verificar productos en la lista de deseos del usuario actual cuando carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isUserAuthenticated()) {
+                // Obtener todos los IDs de productos en la página
+                const productCards = document.querySelectorAll('.product-card');
+                
+                if (productCards.length > 0) {
+                    const productIds = Array.from(productCards).map(card => card.getAttribute('data-product-id')).join(',');
+                    
+                    // Verificar cuáles están en la lista de deseos
+                    fetch(`api/check_wishlist.php?userId=${getUserId()}&productIds=${productIds}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.wishlistItems.length > 0) {
+                            // Marcar los botones de wishlist para productos que ya están en la lista
+                            data.wishlistItems.forEach(productId => {
+                                const wishlistButton = document.querySelector(`.wishlist-button[data-product-id="${productId}"]`);
+                                if (wishlistButton) {
+                                    const heartIcon = wishlistButton.querySelector('i');
+                                    heartIcon.classList.remove('far');
+                                    heartIcon.classList.add('fas');
+                                    wishlistButton.classList.add('active');
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al verificar la lista de deseos:', error);
+                    });
+                }
+                
+                // Cargar el contador del carrito
+                fetch(`api/get_cart_totals.php?userId=${getUserId()}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success && data.wishlistItems.length > 0) {
-                        // Marcar los botones de wishlist para productos que ya están en la lista
-                        data.wishlistItems.forEach(productId => {
-                            const wishlistButton = document.querySelector(`.wishlist-button[data-product-id="${productId}"]`);
-                            if (wishlistButton) {
-                                const heartIcon = wishlistButton.querySelector('i');
-                                heartIcon.classList.remove('far');
-                                heartIcon.classList.add('fas');
-                                wishlistButton.classList.add('active');
-                            }
-                        });
+                    if (data.success) {
+                        const cartBadge = document.querySelector('.badge');
+                        if (cartBadge && data.itemCount > 0) {
+                            cartBadge.textContent = data.itemCount;
+                            cartBadge.style.display = 'flex';
+                        }
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => console.error('Error al cargar el carrito:', error));
             }
-        <?php endif; ?>
-        
-        // Efecto de scroll suave para el botón "Explorar Ahora"
-        document.querySelector('.hero-button').addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
             
-            window.scrollTo({
-                top: targetElement.offsetTop - 100,
-                behavior: 'smooth'
+            // Comprobar si hay acciones pendientes después del login
+            const pendingAction = localStorage.getItem('pendingAction');
+            if (pendingAction && isUserAuthenticated()) {
+                try {
+                    const action = JSON.parse(pendingAction);
+                    
+                    // Procesar la acción pendiente
+                    if (action.type === 'addToCart') {
+                        const button = document.querySelector(`.add-to-cart-button[data-product-id="${action.productId}"]`);
+                        if (button) button.click();
+                    } else if (action.type === 'addToWishlist') {
+                        const button = document.querySelector(`.wishlist-button[data-product-id="${action.productId}"]`);
+                        if (button) button.click();
+                    }
+                    
+                    // Limpiar la acción pendiente
+                    localStorage.removeItem('pendingAction');
+                } catch (e) {
+                    console.error('Error al procesar acción pendiente:', e);
+                    localStorage.removeItem('pendingAction');
+                }
+            }
+        });
+
+        // Carrusel Hero
+        const slides = document.querySelectorAll('.carousel-slide');
+        const indicators = document.querySelectorAll('.indicator');
+        const prevBtn = document.querySelector('.carousel-control.prev');
+        const nextBtn = document.querySelector('.carousel-control.next');
+
+        // Solo inicializar el carrusel si existen todos los elementos necesarios
+        if (slides.length > 0 && indicators.length > 0 && prevBtn && nextBtn) {
+            let currentSlide = 0;
+            let slideInterval;
+
+            // Función para mostrar una diapositiva específica
+            function showSlide(index) {
+                console.log('Cambiando a slide:', index);
+                
+                // Ocultar todas las diapositivas
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                    
+                    // Detener las animaciones
+                    const h1 = slide.querySelector('h1');
+                    const p = slide.querySelector('p');
+                    const button = slide.querySelector('.slide-button');
+                    
+                    if (h1) h1.style.animation = 'none';
+                    if (p) p.style.animation = 'none';
+                    if (button) button.style.animation = 'none';
+                });
+                
+                // Actualizar los indicadores
+                indicators.forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+                
+                // Mostrar la diapositiva actual
+                slides[index].classList.add('active');
+                indicators[index].classList.add('active');
+                
+                // Reiniciar las animaciones
+                setTimeout(() => {
+                    const h1 = slides[index].querySelector('h1');
+                    const p = slides[index].querySelector('p');
+                    const button = slides[index].querySelector('.slide-button');
+                    
+                    if (h1) h1.style.animation = 'fadeInUp 0.8s forwards 0.3s';
+                    if (p) p.style.animation = 'fadeInUp 0.8s forwards 0.5s';
+                    if (button) button.style.animation = 'fadeInUp 0.8s forwards 0.7s';
+                }, 50);
+                
+                // Actualizar el índice actual
+                currentSlide = index;
+            }
+
+            // Función para ir a la siguiente diapositiva
+            function nextSlide() {
+                const newIndex = (currentSlide + 1) % slides.length;
+                showSlide(newIndex);
+            }
+
+            // Función para ir a la diapositiva anterior
+            function prevSlide() {
+                const newIndex = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(newIndex);
+            }
+
+            // Eventos para los botones de navegación
+            nextBtn.addEventListener('click', () => {
+                nextSlide();
+                resetInterval();
             });
+
+            prevBtn.addEventListener('click', () => {
+                prevSlide();
+                resetInterval();
+            });
+
+            // Eventos para los indicadores
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    showSlide(index);
+                    resetInterval();
+                });
+            });
+
+            // Cambio automático de diapositivas
+            function startInterval() {
+                // Limpiar cualquier intervalo existente primero para evitar duplicados
+                if (slideInterval) clearInterval(slideInterval);
+                // Establecer un nuevo intervalo
+                slideInterval = setInterval(nextSlide, 2000); // Cambiamos a 5 segundos para que sea más evidente
+                console.log('Intervalo iniciado'); // Añadir para debugging
+            }
+
+            // Reiniciar el intervalo cuando se interactúa con el carrusel
+            function resetInterval() {
+                clearInterval(slideInterval);
+                startInterval();
+            }
+
+            // Iniciar el carrusel con la tercera diapositiva (índice 2)
+            showSlide(2); // Mostrar la diapositiva de "Bienvenido a Destello" primero
+            startInterval();
+
+            // Pausar el carrusel cuando el cursor está sobre él
+            const carouselElement = document.querySelector('.hero-carousel');
+            if (carouselElement) {
+                carouselElement.addEventListener('mouseenter', () => {
+                    clearInterval(slideInterval);
+                });
+
+                // Reanudar el carrusel cuando el cursor sale
+                carouselElement.addEventListener('mouseleave', () => {
+                    startInterval();
+                });
+
+                // Funcionalidad táctil para dispositivos móviles
+                let touchStartX = 0;
+                let touchEndX = 0;
+
+                carouselElement.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+
+                carouselElement.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                });
+
+                function handleSwipe() {
+                    // Umbral de desplazamiento para detectar un deslizamiento
+                    const threshold = 50;
+                    
+                    if (touchEndX < touchStartX - threshold) {
+                        // Deslizar a la izquierda -> siguiente diapositiva
+                        nextSlide();
+                        resetInterval();
+                    } else if (touchEndX > touchStartX + threshold) {
+                        // Deslizar a la derecha -> diapositiva anterior
+                        prevSlide();
+                        resetInterval();
+                    }
+                }
+            }
+        }
+
+        // Ejecutar una animación inicial para asegurar que el primer slide se muestre correctamente
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const activeSlide = document.querySelector('.carousel-slide.active');
+                if (activeSlide) {
+                    const h1 = activeSlide.querySelector('h1');
+                    const p = activeSlide.querySelector('p');
+                    const button = activeSlide.querySelector('.slide-button');
+                    
+                    if (h1) h1.style.animation = 'fadeInUp 0.8s forwards 0.3s';
+                    if (p) p.style.animation = 'fadeInUp 0.8s forwards 0.5s';
+                    if (button) button.style.animation = 'fadeInUp 0.8s forwards 0.7s';
+                }
+            }, 200);
         });
     </script>
 </body>

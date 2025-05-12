@@ -10,6 +10,8 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/home.css">
+    <link rel="icon" href="assets/img/logo-icon.ico" type="image/x-icon">
+
     <title>Papelería Destello - Acceso</title>
     <style>
         body {
@@ -370,20 +372,77 @@ session_start();
             from {opacity: 0;}
             to {opacity: 1;}
         }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 350px;
+        }
+        
+        .notification.success {
+            background: linear-gradient(to right, #4CAF50, #2E7D32);
+        }
+        
+        .notification.error {
+            background: linear-gradient(to right, #F44336, #C62828);
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .form-loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .form-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .form-loading::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #f7859c;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            z-index: 11;
+        }
+        
+        @keyframes spin {
+            to {transform: translate(-50%, -50%) rotate(360deg);}
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-logo">
-                <a href="home.php">
-                    <h1>Destello</h1>
-                    <span class="logo-tagline">Creatividad en papel</span>
-                </a>
-            </div>
-        </div>
-    </nav>
-
+    
     <div class="auth-container">
         <div class="auth-sidebar">
             <div class="auth-sidebar-content">
@@ -458,7 +517,7 @@ session_start();
                     <p>Únete a nuestra comunidad</p>
                 </div>
                 
-                <form class="auth-form" action="register_process.php" method="post">
+                <form class="auth-form" id="register-form-submit">
                     <div class="form-row">
                         <div class="auth-form-group">
                             <label for="reg-nombre">Nombre</label>
@@ -518,16 +577,8 @@ session_start();
         </div>
     </div>
 
-    <footer style="background: linear-gradient(to right, #feaa9d, #f7859c); color: white; padding: 30px 0; margin-top: auto;">
-        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center;">
-            <p style="margin-bottom: 10px;">© 2023 Papelería Destello. Todos los derechos reservados.</p>
-            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 15px;">
-                <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-instagram"></i></a>
-                <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-twitter"></i></a>
-            </div>
-        </div>
-    </footer>
+    <div class="notification" id="notification"></div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -540,32 +591,38 @@ session_start();
             const notification = document.getElementById('notification');
             
             function showLoginForm() {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                loginTab.classList.add('active');
-                registerTab.classList.remove('active');
+                if (loginForm) loginForm.style.display = 'block';
+                if (registerForm) registerForm.style.display = 'none';
+                if (loginTab) loginTab.classList.add('active');
+                if (registerTab) registerTab.classList.remove('active');
             }
             
             function showRegisterForm() {
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-                loginTab.classList.remove('active');
-                registerTab.classList.add('active');
+                if (loginForm) loginForm.style.display = 'none';
+                if (registerForm) registerForm.style.display = 'block';
+                if (loginTab) loginTab.classList.remove('active');
+                if (registerTab) registerTab.classList.add('active');
             }
             
-            loginTab.addEventListener('click', showLoginForm);
-            registerTab.addEventListener('click', showRegisterForm);
-            showRegister.addEventListener('click', function(e) {
+            if (loginTab) loginTab.addEventListener('click', showLoginForm);
+            if (registerTab) registerTab.addEventListener('click', showRegisterForm);
+            if (showRegister) showRegister.addEventListener('click', function(e) {
                 e.preventDefault();
                 showRegisterForm();
             });
-            showLogin.addEventListener('click', function(e) {
+            if (showLogin) showLogin.addEventListener('click', function(e) {
                 e.preventDefault();
                 showLoginForm();
             });
             
             // Mostrar notificación
             function showNotification(message, type = 'error') {
+                if (!notification) {
+                    // Si no existe el elemento de notificación, usar alert como fallback
+                    alert(message);
+                    return;
+                }
+                
                 notification.textContent = message;
                 notification.className = 'notification ' + type;
                 notification.classList.add('show');
@@ -577,105 +634,111 @@ session_start();
             }
             
             // Procesamiento del formulario de login
-            document.getElementById('login-form-submit').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(this);
-                const form = this;
-                
-                // Mostrar efecto de carga
-                form.classList.add('form-loading');
-                
-                fetch('api/login_process.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    form.classList.remove('form-loading');
+            const loginFormSubmit = document.getElementById('login-form-submit');
+            if (loginFormSubmit) {
+                loginFormSubmit.addEventListener('submit', function(e) {
+                    e.preventDefault();
                     
-                    if (data.success) {
-                        // Guardar el ID del usuario en localStorage
-                        localStorage.setItem('userId', data.userId);
-                        localStorage.setItem('userName', data.userName);
+                    const formData = new FormData(this);
+                    const form = this;
+                    
+                    // Mostrar efecto de carga
+                    form.classList.add('form-loading');
+                    
+                    fetch('api/login_process.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        form.classList.remove('form-loading');
                         
-                        // Mostrar notificación de éxito
-                        showNotification(data.message, 'success');
-                        
-                        // Redirigir después de un breve retraso
-                        setTimeout(() => {
-                            // Verificar si hay una URL de redirección almacenada
-                            const redirectUrl = localStorage.getItem('redirectAfterLogin') || data.redirectUrl;
+                        if (data.success) {
+                            // Guardar el ID del usuario en localStorage
+                            localStorage.setItem('userId', data.userId);
+                            localStorage.setItem('userName', data.userName);
                             
-                            // Limpiar la URL de redirección después de usarla
-                            if (localStorage.getItem('redirectAfterLogin')) {
-                                localStorage.removeItem('redirectAfterLogin');
-                            }
+                            // Mostrar notificación de éxito
+                            showNotification(data.message, 'success');
                             
-                            window.location.href = redirectUrl;
-                        }, 1500);
-                    } else {
-                        // Mostrar mensaje de error
-                        showNotification(data.message);
-                    }
-                })
-                .catch(error => {
-                    form.classList.remove('form-loading');
-                    showNotification('Error de conexión. Intente nuevamente más tarde.');
-                    console.error('Error:', error);
+                            // Redirigir después de un breve retraso
+                            setTimeout(() => {
+                                // Verificar si hay una URL de redirección almacenada
+                                const redirectUrl = localStorage.getItem('redirectAfterLogin') || data.redirectUrl;
+                                
+                                // Limpiar la URL de redirección después de usarla
+                                if (localStorage.getItem('redirectAfterLogin')) {
+                                    localStorage.removeItem('redirectAfterLogin');
+                                }
+                                
+                                window.location.href = redirectUrl;
+                            }, 1500);
+                        } else {
+                            // Mostrar mensaje de error
+                            showNotification(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        form.classList.remove('form-loading');
+                        showNotification('Error de conexión. Intente nuevamente más tarde.');
+                        console.error('Error:', error);
+                    });
                 });
-            });
+            }
             
             // Procesamiento del formulario de registro
-            document.getElementById('register-form-submit').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(this);
-                const form = this;
-                
-                // Verificar que las contraseñas coincidan
-                const password = formData.get('password');
-                const confirmPassword = formData.get('confirm_password');
-                
-                if (password !== confirmPassword) {
-                    showNotification('Las contraseñas no coinciden');
-                    return;
-                }
-                
-                // Mostrar efecto de carga
-                form.classList.add('form-loading');
-                
-                fetch('api/register_process.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    form.classList.remove('form-loading');
+            const registerFormSubmit = document.getElementById('register-form-submit');
+            if (registerFormSubmit) {
+                registerFormSubmit.addEventListener('submit', function(e) {
+                    e.preventDefault();
                     
-                    if (data.success) {
-                        // Guardar el ID del usuario en localStorage
-                        localStorage.setItem('userId', data.userId);
-                        localStorage.setItem('userName', data.userName);
-                        
-                        // Mostrar notificación de éxito
-                        showNotification(data.message, 'success');
-                        
-                        // Redirigir después de un breve retraso
-                        setTimeout(() => {
-                            window.location.href = data.redirectUrl;
-                        }, 1500);
-                    } else {
-                        // Mostrar mensaje de error
-                        showNotification(data.message);
+                    const formData = new FormData(this);
+                    const form = this;
+                    
+                    // Verificar que las contraseñas coincidan
+                    const password = formData.get('password');
+                    const confirmPassword = formData.get('confirm_password');
+                    
+                    if (password !== confirmPassword) {
+                        showNotification('Las contraseñas no coinciden');
+                        return;
                     }
-                })
-                .catch(error => {
-                    form.classList.remove('form-loading');
-                    showNotification('Error de conexión. Intente nuevamente más tarde.');
-                    console.error('Error:', error);
+                    
+                    // Mostrar efecto de carga
+                    form.classList.add('form-loading');
+                    
+                    fetch('api/register_process.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        form.classList.remove('form-loading');
+                        
+                        if (data.success) {
+                            // Guardar el ID del usuario en localStorage
+                            localStorage.setItem('userId', data.userId);
+                            localStorage.setItem('userName', data.userName);
+                            
+                            // Mostrar notificación de éxito
+                            showNotification(data.message, 'success');
+                            
+                            // Redirigir después de un breve retraso
+                            setTimeout(() => {
+                                window.location.href = data.redirectUrl;
+                            }, 1500);
+                        } else {
+                            // Mostrar mensaje de error
+                            showNotification(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        form.classList.remove('form-loading');
+                        showNotification('Error de conexión. Intente nuevamente más tarde.');
+                        console.error('Error:', error);
+                    });
                 });
-            });
+            }
         });
     </script>
 </body>

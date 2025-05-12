@@ -143,7 +143,7 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/home.css">
-
+    <link rel="icon" href="assets/img/logo-icon.ico" type="image/x-icon">
     <title>Destello - Descubre nuestra colección</title>
 </head>
 <body>

@@ -10,6 +10,8 @@ require 'config/db.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/cart.css">
+    <link rel="icon" href="assets/img/logo-icon.ico" type="image/x-icon">
+
     <title>Destello - Carrito</title>   
 </head>
 <body>

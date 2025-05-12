@@ -12,6 +12,8 @@ require 'config/db.php';
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/wishlist.css">
+    <link rel="icon" href="assets/img/logo-icon.ico" type="image/x-icon">
+
     <title>Destello - Lista de Deseos</title>
 </head>
 <body>

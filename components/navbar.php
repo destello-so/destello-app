@@ -11,25 +11,19 @@
             <a href="home.php" class="nav-link">
                 <i class="fas fa-home"></i> Inicio
             </a>
-            <a href="categories.php" class="nav-link">
-                <i class="fas fa-th-large"></i> Categorías
-            </a>
             <a href="products.php" class="nav-link">
                 <i class="fas fa-shopping-bag"></i> Productos
             </a>
-            <a href="checkout.php" class="nav-link">
-                <i class="fas fa-credit-card"></i> Pago
+            <a href="wishlist.php" class="nav-link">
+                <i class="fas fa-heart"></i> Lista de Deseos
+            </a>
+            <a href="orders.php" class="nav-link">
+                <i class="fas fa-box"></i> Mis Pedidos
             </a>
         </div>
         
         <div class="navbar-actions">
             <div class="action-icons">
-                <a href="wishlist.php" class="icon-action">
-                    <div class="icon-badge-container">
-                        <i class="fas fa-heart"></i>
-                        <span class="badge">2</span>
-                    </div>
-                </a>
                 <a href="cart.php" class="icon-action">
                     <div class="icon-badge-container">
                         <i class="fas fa-shopping-cart"></i>
@@ -53,9 +47,10 @@
 <div class="mobile-menu-container">
     <ul class="mobile-menu">
         <li><a href="home.php"><i class="fas fa-home"></i> Inicio</a></li>
-        <li><a href="categories.php"><i class="fas fa-th-large"></i> Categorías</a></li>
         <li><a href="products.php"><i class="fas fa-shopping-bag"></i> Productos</a></li>
-        <li><a href="checkout.php"><i class="fas fa-credit-card"></i> Pago</a></li>
+        <li><a href="wishlist.php"><i class="fas fa-heart"></i> Lista de Deseos</a></li>
+        <li><a href="orders.php"><i class="fas fa-box"></i> Mis Pedidos</a></li>
+        <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
         <li><a href="logout.php" class="mobile-button"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
     </ul>
 </div>

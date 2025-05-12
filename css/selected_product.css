@@ -1,0 +1,196 @@
+.modal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.modal.show {
+    display: flex !important;
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal-content {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    padding: 2.5rem 2rem 2rem 2rem;
+    max-width: 900px;
+    width: 95vw;
+    text-align: left;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+@keyframes modalAppear {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+#addToCartBtn {
+    background: linear-gradient(135deg, #f0f3ff, #e7ebfd) !important;
+    color: #6541c0 !important;
+    border: none !important;
+    border-radius: 30px !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 4px 12px rgba(114, 76, 203, 0.15) !important;
+    transition: all 0.3s !important;
+    padding: 15px !important;
+    letter-spacing: 0.5px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+#addToCartBtn:before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.5)) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s !important;
+}
+#addToCartBtn:hover {
+    background: linear-gradient(135deg, #e5eaff, #d8e0ff) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(114, 76, 203, 0.2) !important;
+    color: #5536a8 !important;
+}
+#addToCartBtn:hover:before {
+    opacity: 1 !important;
+}
+#addToCartBtn.colorful {
+    background: linear-gradient(90deg, #f5f7fa, #e5e9f2) !important;
+    color: #724CCB !important;
+    border: 1px solid #e0e6ed !important;
+}
+#addToCartBtn.colorful:hover {
+    background: linear-gradient(90deg, #e5e9f2, #f5f7fa) !important;
+    color: #5e3ac0 !important;
+}
+#addToCartBtn.accent {
+    background: white !important;
+    color: #333 !important;
+    border-left: 4px solid #f6909d !important;
+    border-radius: 4px !important;
+}
+#addToListBtn {
+    background: #fff0f3 !important;
+    color: var(--secondary-color) !important;
+    border: none !important;
+    border-radius: 30px !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    box-shadow: none !important;
+    transition: all 0.3s !important;
+    padding: 15px !important;
+    letter-spacing: 0.5px !important;
+}
+#addToListBtn:hover {
+    background: #ffe0e7 !important;
+}
+#closeModalBtn {
+    background: #fff !important;
+    border: none !important;
+    color: #888 !important;
+    font-size: 1.3rem !important;
+    cursor: pointer !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    top: 16px !important;
+    right: 16px !important;
+}
+#closeModalBtn:hover {
+    background: #f8f8f8 !important;
+    color: #666 !important;
+}
+#modalImg {
+    border-radius: 16px !important;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05) !important;
+}
+#modalNombre {
+    color: #333 !important;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.3rem !important;
+    line-height: 1.2 !important;
+}
+#modalSubtitulo {
+    color: var(--secondary-color) !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 1rem !important;
+    line-height: 1.2 !important;
+}
+#modalPrecio {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #724CCB !important;
+    margin-bottom: 1rem !important;
+}
+#modalDescripcion {
+    color: #666 !important;
+    font-size: 1.08rem !important;
+    margin-bottom: 1.1rem !important;
+}
+#decrementBtn, #incrementBtn {
+    width: 32px !important;
+    height: 32px !important;
+    background: #f9f9f9 !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-size: 1.2rem !important;
+    color: #999 !important;
+    border-radius: 50% !important;
+    transition: all 0.2s !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+#decrementBtn:hover, #incrementBtn:hover {
+    background: #f0f0f0 !important;
+    color: #666 !important;
+}
+#cantidadInput {
+    width: 40px !important;
+    text-align: center !important;
+    border: none !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    outline: none !important;
+    padding: 8px 4px !important;
+    color: #333 !important;
+    background: transparent !important;
+}
+#stockInfo {
+    margin-left: 15px !important;
+    font-size: 0.85rem !important;
+    color: #999 !important;
+}
+#modalSku, #modalDimensiones {
+    font-weight: 600 !important;
+    color: #333 !important;
+    font-size: 0.95rem !important;
+}
+
+/* Color del texto cantidad */
+.cantidad-label {
+    color: #f6909d !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    margin-bottom: 10px !important;
+    display: block !important;
+}

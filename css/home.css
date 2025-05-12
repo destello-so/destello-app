@@ -7,9 +7,20 @@ body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f8f8f
         .hero h1 { font-size: 2.5em; margin: 0 0 10px 0; color: #fff; }
         .hero p { color: #fff; margin-bottom: 20px; }
         .hero button { background: #ff7f6b; color: #fff; border: none; padding: 12px 30px; border-radius: 20px; font-size: 1em; cursor: pointer; }
-        .section { max-width: 1400px; max-height: 1400px;margin: 40px auto; padding: 0; }
+        .section { 
+            max-width: 1400px; 
+            margin: 40px auto; 
+            padding: 0 20px; 
+            overflow: hidden;
+        }
         .section h2 { margin-bottom: 20px; }
-        .products, .brands { display: flex; flex-wrap: wrap; gap: 2em; }
+        .products, .brands { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 2em; 
+            justify-content: center;
+            margin-bottom: 40px;
+        }
         .product, .brand { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 16px; flex: 1 1 400px; min-width: 180px; max-width: 300px; text-align: center; }
         .product img { width: 100%; border-radius: 8px; }
         .product-title { font-weight: 600; margin: 10px 0 5px 0; }
@@ -76,3 +87,77 @@ body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f8f8f
         }
         .slider .prev { left: 10px; }
         .slider .next { right: 10px; }
+        
+        /* Modal de producto reutilizando estilos del checkout */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    animation: modalAppear 0.5s;
+}
+
+/* Estilos base del producto */
+.product { 
+    background: #fff; 
+    border-radius: 12px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); 
+    padding: 16px; 
+    flex: 1 1 400px; 
+    min-width: 180px; 
+    max-width: 300px; 
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    border: 1px solid transparent;
+    overflow: hidden;
+}
+
+/* Efecto hover similar al de la pantalla de pago */
+.product:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border-color: #ddf0e9;
+    cursor: pointer;
+}
+
+/* Efecto de brillo sutil */
+.product::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0), rgba(255,255,255,0.6));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.product:hover::before {
+    opacity: 1;
+}
+
+/* Asegurarse que todos los elementos dentro del producto estén por encima del efecto */
+.product img, .product-title, .product-price {
+    position: relative;
+    z-index: 2;
+}
